@@ -1,5 +1,6 @@
 #include "Ped.hpp"
 #include "Joaat.hpp"
+#include "game/rdr/Natives.hpp"  // Include this to use TASK_FOLLOW_TO_OFFSET_OF_ENTITY
 
 namespace YimMenu::Peds
 {
@@ -33,7 +34,10 @@ namespace YimMenu::Peds
 		if (spawnDead)
 			PED::APPLY_DAMAGE_TO_PED(ped, std::numeric_limits<int>::max(), 1, 0, YimMenu::Self::PlayerPed);
 
+		// Make the ped follow the player
+		TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0, 0, 0, 1.0f, -1, 1.0f, true, false, false, false, false, false);
+
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
 		return ped;
-	};
+	}
 }
