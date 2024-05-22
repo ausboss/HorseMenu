@@ -34,10 +34,19 @@ namespace YimMenu::Peds
         if (spawnDead)
             PED::APPLY_DAMAGE_TO_PED(ped, std::numeric_limits<int>::max(), 1, 0, YimMenu::Self::PlayerPed);
 
-        // Make the ped follow the player if the checkbox is checked
         if (followPlayer)
         {
+            // Make the ped follow the player
             TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0, 0, 0, 1.0f, -1, 1.0f, true, false, false, false, false, false);
+
+            // Set the ped to not flee
+            PED::SET_PED_COMBAT_ATTRIBUTES(ped, 46, true);  // Always fight
+            PED::SET_PED_FLEE_ATTRIBUTES(ped, 0, false);    // Disable fleeing
+            PED::SET_PED_COMBAT_ATTRIBUTES(ped, 5, true);   // Can fight armed peds
+
+            // Give the ped a weapon and set them to combat mode
+            WEAPON::GIVE_WEAPON_TO_PED(ped, Joaat("WEAPON_PISTOL"), 9999, true, true);
+            TASK::TASK_COMBAT_PED(ped, YimMenu::Self::PlayerPed, 0, 16);
         }
 
         STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
