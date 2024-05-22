@@ -45,7 +45,7 @@ namespace YimMenu::Peds
             PED::SET_PED_COMBAT_ATTRIBUTES(ped, 5, true);   // Can fight armed peds
 
             // Give the ped a weapon and set them to combat mode
-            WEAPON::GIVE_WEAPON_TO_PED(ped, Joaat("WEAPON_PISTOL"), 9999, true, true);
+            WEAPON::GIVE_WEAPON_TO_PED(ped, joaat("weapon_repeater_carbine"), 9999, true);
             TASK::TASK_COMBAT_PED(ped, YimMenu::Self::PlayerPed, 0, 16);
         }
 
