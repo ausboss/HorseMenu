@@ -3,7 +3,7 @@ name: Nightly Build
 on:
   schedule:
     # cronjob that triggers every day at 2PM UTC
-    # - cron: '0 14 * * *'
+    - cron: "0 14 * * *"
   workflow_dispatch:
 
 jobs:
@@ -62,7 +62,7 @@ jobs:
   create_release:
     runs-on: ubuntu-latest
     name: Create Release
-    needs: [ check_date, build_nightly ]
+    needs: [check_date, build_nightly]
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
     steps:
       - uses: actions/checkout@v3
