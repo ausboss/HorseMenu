@@ -5,7 +5,7 @@
 
 namespace YimMenu::Peds
 {
-	int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noFleeing)
+	int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noFleeing, bool isHogtied)
 	{
 		Hash model = Joaat(model_name.c_str());
 
@@ -24,6 +24,8 @@ namespace YimMenu::Peds
 		auto ped = PED::CREATE_PED(model, coords.x, coords.y, coords.z, heading, 1, 0, 0, 0);
 
 		PED::_SET_RANDOM_OUTFIT_VARIATION(ped, true);
+		PED::SET_PED_VISIBLE(ped, true);
+		PED::SET_PED_HEARING_RANGE(ped, 10000.0f);
 		ENTITY::PLACE_ENTITY_ON_GROUND_PROPERLY(ped, true);
 		ENTITY::FREEZE_ENTITY_POSITION(ped, blockNewPedMovement);
 		ENTITY::SET_ENTITY_INVINCIBLE(ped, invincible);
@@ -44,6 +46,10 @@ namespace YimMenu::Peds
 
 		if (spawnDead)
 			PED::APPLY_DAMAGE_TO_PED(ped, std::numeric_limits<int>::max(), 1, 0, YimMenu::Self::PlayerPed);
+
+		if (isHogtied)
+			TASK::GET_IS_TASK_ACTIVE(ped, 400);
+
 
 		if (followPlayer)
 		{
