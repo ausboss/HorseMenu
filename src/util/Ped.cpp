@@ -93,7 +93,7 @@ namespace YimMenu::Peds
 
 			// Make the ped follow the player and engage in combat
 			TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0.0f, 0.0f, 0.0f, 1.0f, -1, 1.0f, true, false, false, true, false, true);
-			TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0);
+			TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0, 16);
 			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true);
 		}
 
