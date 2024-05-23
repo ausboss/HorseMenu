@@ -1,55 +1,60 @@
 #include "Ped.hpp"
+
 #include "Joaat.hpp"
-#include "game/rdr/Natives.hpp"  // Ensure this includes TASK and PED functions
+#include "game/rdr/Natives.hpp" // Ensure this includes TASK and PED functions
 
 namespace YimMenu::Peds
 {
-    // Returns 0 if it fails
-    int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noGravity)
-    {
-        Hash model = Joaat(model_name.c_str());
+	// Returns 0 if it fails
+	int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noFleeing)
+	{
+		Hash model = Joaat(model_name.c_str());
 
-        if (!STREAMING::IS_MODEL_IN_CDIMAGE(model) || !STREAMING::IS_MODEL_VALID(model))
-        {
-            Notifications::Show("Spawner", "Invalid ped model", NotificationType::Error);
-            return 0;
-        }
-
-        for (int i = 0; i < 30 && !STREAMING::HAS_MODEL_LOADED(model); i++)
-        {
-            STREAMING::REQUEST_MODEL(model, false);
-            ScriptMgr::Yield();
-        }
-
-        auto ped = PED::CREATE_PED(model, coords.x, coords.y, coords.z, heading, 1, 0, 0, 0);
-
-        PED::_SET_RANDOM_OUTFIT_VARIATION(ped, true);
-        ENTITY::PLACE_ENTITY_ON_GROUND_PROPERLY(ped, true);
-
-        ENTITY::FREEZE_ENTITY_POSITION(ped, blockNewPedMovement);
-        ENTITY::SET_ENTITY_INVINCIBLE(ped, invincible);
-        ENTITY::SET_ENTITY_VISIBLE(ped, !invisible);
-		// toggle to remove gravity on spawned ped
-		ENTITY::SET_ENTITY_HAS_GRAVITY(ped, !noGravity);
-        PED::_SET_PED_SCALE(ped, (float)scale);
-
-        if (spawnDead)
-            PED::APPLY_DAMAGE_TO_PED(ped, std::numeric_limits<int>::max(), 1, 0, YimMenu::Self::PlayerPed);
-
-        if (followPlayer)
-        {
-            // Make the ped follow the player
-            TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0, 0, 0, 1.0f, -1, 1.0f, true, false, false, false, false, false);
-        }
-
-		if (noGravity)
+		if (!STREAMING::IS_MODEL_IN_CDIMAGE(model) || !STREAMING::IS_MODEL_VALID(model))
 		{
-			ENTITY::SET_ENTITY_HAS_GRAVITY(ped, false);
+			Notifications::Show("Spawner", "Invalid ped model", NotificationType::Error);
+			return 0;
 		}
-		
+
+		for (int i = 0; i < 30 && !STREAMING::HAS_MODEL_LOADED(model); i++)
+		{
+			STREAMING::REQUEST_MODEL(model, false);
+			ScriptMgr::Yield();
+		}
+
+		auto ped = PED::CREATE_PED(model, coords.x, coords.y, coords.z, heading, 1, 0, 0, 0);
+
+		PED::_SET_RANDOM_OUTFIT_VARIATION(ped, true);
+		ENTITY::PLACE_ENTITY_ON_GROUND_PROPERLY(ped, true);
+		ENTITY::FREEZE_ENTITY_POSITION(ped, blockNewPedMovement);
+		ENTITY::SET_ENTITY_INVINCIBLE(ped, invincible);
+		ENTITY::SET_ENTITY_VISIBLE(ped, !invisible);
+		PED::_SET_PED_SCALE(ped, (float)scale);
+
+		if (noFleeing)
+		{
+			// Set the ped to not flee
+			PED::SET_PED_COMBAT_ATTRIBUTES(ped, 46, true); // Always fight
+			PED::SET_PED_FLEE_ATTRIBUTES(ped, 0, false);   // Disable all fleeing
+			PED::SET_PED_COMBAT_RANGE(ped, 0);             // Set combat range to near
+			PED::SET_PED_COMBAT_MOVEMENT(ped, 2);          // Set combat movement to advanced
+			PED::SET_PED_COMBAT_ATTRIBUTES(ped, 1, PED::IS_PED_IN_ANY_VEHICLE(ped, 0));  // Fight in vehicle
+			PED::SET_PED_COMBAT_ATTRIBUTES(ped, 3, !PED::IS_PED_IN_ANY_VEHICLE(ped, 0)); // Fight on foot
+			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, false);                       // Allow non-temporary events
+		}
 
 
-        STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
-        return ped;
-    }
+		if (spawnDead)
+			PED::APPLY_DAMAGE_TO_PED(ped, std::numeric_limits<int>::max(), 1, 0, YimMenu::Self::PlayerPed);
+
+		if (followPlayer)
+		{
+			// Make the ped follow the player
+			TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0, 0, 0, 1.0f, -1, 1.0f, true, false, false, false, false, false);
+		}
+
+
+		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
+		return ped;
+	}
 }
