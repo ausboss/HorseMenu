@@ -46,7 +46,7 @@ namespace YimMenu::Submenus
     {
         static std::string pedModelBuffer;
         static float scale = 1;
-        static bool dead, invis, godmode, freeze, followPlayer, nonFleeing, engageInCombat;
+        static bool dead, invis, godmode, freeze, followPlayer, noGravity;
         InputTextWithHint("##pedmodel", "Ped Model", &pedModelBuffer, ImGuiInputTextFlags_CallbackCompletion, nullptr, PedSpawnerInputCallback).Draw();
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Press Tab to auto fill");
@@ -74,12 +74,14 @@ namespace YimMenu::Submenus
         ImGui::Checkbox("GodMode", &godmode);
         ImGui::Checkbox("Frozen", &freeze);
         ImGui::Checkbox("Follow Player", &followPlayer);
+		ImGui::Checkbox("No Gravity", &noGravity);
+		
 
         ImGui::SliderFloat("Scale", &scale, 0.1, 10);
         if (ImGui::Button("Spawn"))
         {
             FiberPool::Push([] {
-                Peds::SpawnPed(pedModelBuffer, ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(Self::PlayerPed, 0, 3, 0), 0, freeze, dead, godmode, invis, scale, followPlayer, nonFleeing, engageInCombat);
+                Peds::SpawnPed(pedModelBuffer, ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(Self::PlayerPed, 0, 3, 0), 0, freeze, dead, godmode, invis, scale, followPlayer, noGravity);
             });
         }
     }

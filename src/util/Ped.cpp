@@ -5,7 +5,7 @@
 namespace YimMenu::Peds
 {
     // Returns 0 if it fails
-    int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool nonFleeing, bool engageInCombat)
+    int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noGravity)
     {
         Hash model = Joaat(model_name.c_str());
 
@@ -29,6 +29,8 @@ namespace YimMenu::Peds
         ENTITY::FREEZE_ENTITY_POSITION(ped, blockNewPedMovement);
         ENTITY::SET_ENTITY_INVINCIBLE(ped, invincible);
         ENTITY::SET_ENTITY_VISIBLE(ped, !invisible);
+		// toggle to remove gravity on spawned ped
+		ENTITY::SET_ENTITY_HAS_GRAVITY(ped, !noGravity);
         PED::_SET_PED_SCALE(ped, (float)scale);
 
         if (spawnDead)
@@ -39,6 +41,13 @@ namespace YimMenu::Peds
             // Make the ped follow the player
             TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0, 0, 0, 1.0f, -1, 1.0f, true, false, false, false, false, false);
         }
+
+		if (noGravity)
+		{
+			ENTITY::SET_ENTITY_HAS_GRAVITY(ped, false);
+		}
+		
+
 
         STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
         return ped;
