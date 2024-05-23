@@ -5,7 +5,7 @@
 
 namespace YimMenu::Peds
 {
-	int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noFleeing, bool isArmed)
+	int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noFleeing, bool isArmed, bool isDrunk)
 	{
 		Hash model = Joaat(model_name.c_str());
 
@@ -45,6 +45,12 @@ namespace YimMenu::Peds
 
 		if (spawnDead)
 			PED::APPLY_DAMAGE_TO_PED(ped, std::numeric_limits<int>::max(), 1, 0, YimMenu::Self::PlayerPed);
+
+		if (isDrunk)
+		{
+			AUDIO::SET_PED_IS_DRUNK(ped, true);
+			PED::_SET_PED_DRUNKNESS(ped, true, 1.0f);
+		}
 
 
 		if (isArmed)
