@@ -52,7 +52,7 @@ namespace YimMenu::Peds
         {
             // Engage the ped in combat with nearby enemies
             PED::SET_PED_COMBAT_ATTRIBUTES(ped, 5, true);   // Can fight armed peds
-            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 100.0f, 0);
+            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 100.0f);
         }
 
         STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
