@@ -32,7 +32,6 @@ namespace YimMenu::Peds
 
 		if (noFleeing)
 		{
-			// Set the ped to not flee
 			PED::SET_PED_COMBAT_ATTRIBUTES(ped, 46, true); // Always fight
 			PED::SET_PED_FLEE_ATTRIBUTES(ped, 0, false);   // Disable all fleeing
 			PED::SET_PED_COMBAT_RANGE(ped, 0);             // Set combat range to near
@@ -48,11 +47,20 @@ namespace YimMenu::Peds
 
 		if (followPlayer)
 		{
-			// Make the ped follow the player
+			// Create a group and set the player as the leader
+			int groupID = CREATE_GROUP(0);
+			SET_PED_AS_GROUP_LEADER(YimMenu::Self::PlayerPed, groupID, false);
+			SET_PED_AS_GROUP_MEMBER(ped, groupID);
+			SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(ped, groupID, true);
+			SET_GROUP_SEPARATION_RANGE(groupID, 999999.9f); // Very high range to prevent separation
+
+			// Set group formation and spacing
+			SET_GROUP_FORMATION(groupID, 0); // Default formation
+			SET_GROUP_FORMATION_SPACING(groupID, 1.0f, 1.0f, 1.0f);
+
+			// Make the ped follow the player and engage in combat
 			TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0.0f, 0.0f, 0.0f, 1.0f, -1, 1.0f, true, false, false, true, false, true);
-			// Set the ped to guard the player
-			TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0);
-			TASK::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true);
+			TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0, 0);
 		}
 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
