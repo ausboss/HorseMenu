@@ -24,7 +24,6 @@ namespace YimMenu::Peds
 
 		PED::_SET_RANDOM_OUTFIT_VARIATION(ped, true);
 		ENTITY::PLACE_ENTITY_ON_GROUND_PROPERLY(ped, true);
-
 		ENTITY::FREEZE_ENTITY_POSITION(ped, blockNewPedMovement);
 		ENTITY::SET_ENTITY_INVINCIBLE(ped, invincible);
 		ENTITY::SET_ENTITY_VISIBLE(ped, !invisible);

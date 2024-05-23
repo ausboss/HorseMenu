@@ -1,9 +1,10 @@
 #include "GUI.hpp"
-#include "Menu.hpp"
-#include "ESP.hpp"
+
 #include "ContextMenu.hpp"
-#include "core/renderer/Renderer.hpp"
+#include "ESP.hpp"
+#include "Menu.hpp"
 #include "core/frontend/Notifications.hpp"
+#include "core/renderer/Renderer.hpp"
 
 namespace YimMenu
 {
@@ -49,7 +50,7 @@ namespace YimMenu
 
 	void GUI::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
-		if (msg == WM_KEYUP && wparam == VK_INSERT)
+		if (msg == WM_KEYUP && wparam == VK_F11)
 		{
 			// Persist and restore the cursor position between menu instances
 			static POINT CursorCoords{};
