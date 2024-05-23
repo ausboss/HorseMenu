@@ -53,7 +53,7 @@ namespace YimMenu::Peds
 			Hash weapon;
 			if (WEAPON::GET_CURRENT_PED_WEAPON(YimMenu::Self::PlayerPed, &weapon, true, 0, true))
 			{
-				WEAPON::GIVE_WEAPON_TO_PED(ped, weapon, 9999, false, true);
+				WEAPON::GIVE_WEAPON_TO_PED(ped, weapon, 1000, true, true, 0, false, 0.5f, 1.0f, 0, 0, 0.5f, 0);
 			}
 		}
 
