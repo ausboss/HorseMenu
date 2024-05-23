@@ -45,13 +45,28 @@ namespace YimMenu::Peds
             // Set the ped to not flee
             PED::SET_PED_COMBAT_ATTRIBUTES(ped, 46, true);  // Always fight
             PED::SET_PED_FLEE_ATTRIBUTES(ped, 0, false);    // Disable fleeing
+            PED::SET_PED_COMBAT_ATTRIBUTES(ped, 5, true);   // Can fight armed peds
         }
 
         if (engageInCombat)
         {
-            // Engage the ped in combat
-            PED::SET_PED_COMBAT_ATTRIBUTES(ped, 5, true);   // Can fight armed peds
-            TASK::TASK_COMBAT_PED(ped, YimMenu::Self::PlayerPed, 0, 16);
+            // Create a relationship group for the spawned peds
+            Hash relGroup;
+            PED::ADD_RELATIONSHIP_GROUP("SPAWNED_PEDS", &relGroup);
+            PED::SET_PED_RELATIONSHIP_GROUP_HASH(ped, relGroup);
+
+            // Set relationship between player and spawned peds to friendly
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(0, relGroup, YimMenu::Self::PlayerGroup); // 0 = friendly
+
+            // Set relationship between spawned peds and others to hostile
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("CIVMALE")); // 5 = hate
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("CIVFEMALE"));
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("COP"));
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("PRIVATE_SECURITY"));
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("SECURITY_GUARD"));
+
+            // Task the ped to combat any hostile entities nearby
+            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 100.0f, 0);
         }
 
         STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);

@@ -74,7 +74,7 @@ namespace YimMenu::Submenus
         ImGui::Checkbox("Frozen", &freeze);
         ImGui::Checkbox("Follow Player", &followPlayer);
         ImGui::Checkbox("Non-Fleeing", &nonFleeing);
-        ImGui::Checkbox("Fight Player", &engageInCombat);
+        ImGui::Checkbox("Engage in Combat", &engageInCombat);
         ImGui::SliderFloat("Scale", &scale, 0.1, 10);
         if (ImGui::Button("Spawn"))
         {
