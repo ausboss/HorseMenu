@@ -56,17 +56,17 @@ namespace YimMenu::Peds
             PED::SET_PED_RELATIONSHIP_GROUP_HASH(ped, relGroup);
 
             // Set relationship between player and spawned peds to friendly
-            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(0, relGroup, YimMenu::Self::PlayerGroup); // 0 = friendly
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(0, relGroup, PED::GET_HASH_KEY("PLAYER"));
 
             // Set relationship between spawned peds and others to hostile
-            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("CIVMALE")); // 5 = hate
-            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("CIVFEMALE"));
-            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("COP"));
-            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("PRIVATE_SECURITY"));
-            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, PED::GET_HASH_KEY("SECURITY_GUARD"));
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, YimMenu::NativeInvoker::Invoke<0xD24D37CC275948CC, Hash>("CIVMALE"));
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, YimMenu::NativeInvoker::Invoke<0xD24D37CC275948CC, Hash>("CIVFEMALE"));
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, YimMenu::NativeInvoker::Invoke<0xD24D37CC275948CC, Hash>("COP"));
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, YimMenu::NativeInvoker::Invoke<0xD24D37CC275948CC, Hash>("PRIVATE_SECURITY"));
+            PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, relGroup, YimMenu::NativeInvoker::Invoke<0xD24D37CC275948CC, Hash>("SECURITY_GUARD"));
 
             // Task the ped to combat any hostile entities nearby
-            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 100.0f, 0);
+            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 100.0f);
         }
 
         STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
