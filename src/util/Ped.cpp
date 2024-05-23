@@ -1,5 +1,5 @@
 #include "Ped.hpp"
-#include "util/Joaat.hpp"  // Ensure this path is correct based on your project structure
+#include "util/Joaat.hpp" 
 #include "game/rdr/Natives.hpp"  // Include this to use TASK_FOLLOW_TO_OFFSET_OF_ENTITY
 
 namespace YimMenu::Peds
@@ -7,7 +7,7 @@ namespace YimMenu::Peds
     // Returns 0 if it fails
     int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer)
     {
-        Hash model = Joaat(model_name);  // Use Joaat function from util/Joaat.hpp
+        Hash model = Joaat(model_name.c_str());
 
         if (!STREAMING::IS_MODEL_IN_CDIMAGE(model) || !STREAMING::IS_MODEL_VALID(model))
         {
@@ -45,7 +45,7 @@ namespace YimMenu::Peds
             PED::SET_PED_COMBAT_ATTRIBUTES(ped, 5, true);   // Can fight armed peds
 
             // Give the ped a weapon and set them to combat mode
-            WEAPON::GIVE_WEAPON_TO_PED(ped, Joaat("weapon_repeater_carbine"), 9999, true);
+            // WEAPON::GIVE_WEAPON_TO_PED(ped, joaat("weapon_repeater_carbine"), 9999, true);
             TASK::TASK_COMBAT_PED(ped, YimMenu::Self::PlayerPed, 0, 16);
         }
 
