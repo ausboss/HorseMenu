@@ -24,7 +24,6 @@ namespace YimMenu::Peds
 		auto ped = PED::CREATE_PED(model, coords.x, coords.y, coords.z, heading, 1, 0, 0, 0);
 
 		PED::_SET_RANDOM_OUTFIT_VARIATION(ped, true);
-		PED::SET_PED_VISIBLE(ped, true);
 		PED::SET_PED_HEARING_RANGE(ped, 10000.0f);
 		ENTITY::PLACE_ENTITY_ON_GROUND_PROPERLY(ped, true);
 		ENTITY::FREEZE_ENTITY_POSITION(ped, blockNewPedMovement);
