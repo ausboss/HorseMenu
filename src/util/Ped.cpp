@@ -5,7 +5,7 @@
 
 namespace YimMenu::Peds
 {
-	int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noFleeing, bool isHogtied)
+	int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noFleeing, bool isArmed)
 	{
 		Hash model = Joaat(model_name.c_str());
 
@@ -46,8 +46,16 @@ namespace YimMenu::Peds
 		if (spawnDead)
 			PED::APPLY_DAMAGE_TO_PED(ped, std::numeric_limits<int>::max(), 1, 0, YimMenu::Self::PlayerPed);
 
-		if (isHogtied)
-			TASK::GET_IS_TASK_ACTIVE(ped, 400);
+
+		if (isArmed)
+		// give the ped the same weapon as the player
+		{
+			Hash weapon;
+			if (WEAPON::GET_CURRENT_PED_WEAPON(YimMenu::Self::PlayerPed, &weapon, true, 0, true))
+			{
+				WEAPON::GIVE_WEAPON_TO_PED(ped, weapon, 9999, false, true);
+			}
+		}
 
 
 		if (followPlayer)
