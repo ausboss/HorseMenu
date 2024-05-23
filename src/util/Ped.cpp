@@ -82,7 +82,7 @@ namespace YimMenu::Peds
 		{
 			// Create a group and set the player as the leader
 			int groupID = PED::CREATE_GROUP(0);
-			PED::SET_PED_AS_GROUP_LEADER(YimMenu::Self::PlayerPed, groupID);
+			PED::SET_PED_AS_GROUP_LEADER(YimMenu::Self::PlayerPed, groupID, 0);
 			PED::SET_PED_AS_GROUP_MEMBER(ped, groupID);
 			PED::SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(ped, groupID, true);
 			PED::SET_GROUP_SEPARATION_RANGE(groupID, 999999.9f); // Very high range to prevent separation
