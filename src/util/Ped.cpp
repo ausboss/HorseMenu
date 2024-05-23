@@ -49,7 +49,7 @@ namespace YimMenu::Peds
         if (engageInCombat)
         {
             // Engage the ped in combat with surrounding enemies
-            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0);  // Range of 50 units, default flag
+            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0, 0);  // Range of 50 units, default flag
         }
 
         STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
