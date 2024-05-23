@@ -77,6 +77,7 @@ namespace YimMenu::Submenus
 		ImGui::Checkbox("Frozen", &freeze);
 		ImGui::Checkbox("Follow Player", &followPlayer);
 		ImGui::Checkbox("No Fleeing", &noFleeing);
+		ImGui::Checkbox("Is Armed", &isArmed);
 
 
 		ImGui::SliderFloat("Scale", &scale, 0.1, 10);
