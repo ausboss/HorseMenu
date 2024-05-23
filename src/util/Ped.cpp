@@ -43,16 +43,13 @@ namespace YimMenu::Peds
         if (nonFleeing)
         {
             // Set the ped to not flee
-            PED::SET_PED_COMBAT_ATTRIBUTES(ped, 46, true);  // Always fight
-            PED::SET_PED_FLEE_ATTRIBUTES(ped, 0, false);    // Disable fleeing
-            PED::SET_PED_COMBAT_ATTRIBUTES(ped, 5, true);   // Can fight armed peds
+            PED::SET_PED_FLEE_ATTRIBUTES(ped, 0, false);  // Disable all fleeing
         }
 
         if (engageInCombat)
         {
-            // Engage the ped in combat with nearby enemies
-            PED::SET_PED_COMBAT_ATTRIBUTES(ped, 5, true);   // Can fight armed peds
-            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 100.0f, 0, 0);
+            // Engage the ped in combat with surrounding enemies
+            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0);  // Range of 50 units, default flag
         }
 
         STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);

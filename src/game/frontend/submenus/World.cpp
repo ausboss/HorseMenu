@@ -13,6 +13,7 @@ namespace YimMenu::Submenus
             if (pedModel.model == model)
                 return true;
         }
+
         return false;
     }
 
@@ -32,13 +33,13 @@ namespace YimMenu::Submenus
                     newText = pedModel.model;
                 }
             }
+
             if (!newText.empty())
             {
                 data->DeleteChars(0, data->BufTextLen);
                 data->InsertChars(0, newText.c_str());
             }
         }
-        return 0; // Ensure the callback function returns an int
     }
 
     void PedSpawnerGroup()
@@ -78,7 +79,7 @@ namespace YimMenu::Submenus
         ImGui::SliderFloat("Scale", &scale, 0.1, 10);
         if (ImGui::Button("Spawn"))
         {
-            FiberPool::Push([=] {  // Capture the new options by value to pass them correctly
+            FiberPool::Push([] {
                 Peds::SpawnPed(pedModelBuffer, ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(Self::PlayerPed, 0, 3, 0), 0, freeze, dead, godmode, invis, scale, followPlayer, nonFleeing, engageInCombat);
             });
         }
@@ -87,7 +88,7 @@ namespace YimMenu::Submenus
     World::World() :
         Submenu::Submenu("World")
     {
-        auto spawners = std::make_shared<Category>("Spawners");
+        auto spawners         = std::make_shared<Category>("Spawners");
         auto pedSpawnerGroup = std::make_shared<Group>("Ped Spawner", GetListBoxDimensions());
 
         pedSpawnerGroup->AddItem(std::make_shared<ImGuiItem>([] {
@@ -95,6 +96,7 @@ namespace YimMenu::Submenus
         }));
 
         spawners->AddItem(pedSpawnerGroup);
+
         AddCategory(std::move(spawners));
     }
 }
