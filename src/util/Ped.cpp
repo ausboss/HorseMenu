@@ -5,7 +5,6 @@
 
 namespace YimMenu::Peds
 {
-	// Returns 0 if it fails
 	int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noFleeing)
 	{
 		Hash model = Joaat(model_name.c_str());
@@ -40,9 +39,9 @@ namespace YimMenu::Peds
 			PED::SET_PED_COMBAT_MOVEMENT(ped, 2);          // Set combat movement to advanced
 			PED::SET_PED_COMBAT_ATTRIBUTES(ped, 1, PED::IS_PED_IN_ANY_VEHICLE(ped, 0));  // Fight in vehicle
 			PED::SET_PED_COMBAT_ATTRIBUTES(ped, 3, !PED::IS_PED_IN_ANY_VEHICLE(ped, 0)); // Fight on foot
-			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, false);                       // Allow non-temporary events
+			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true);                        // Block non-temporary events
+			PED::SET_PED_COMBAT_ABILITY(ped, 2);                                         // High combat ability
 		}
-
 
 		if (spawnDead)
 			PED::APPLY_DAMAGE_TO_PED(ped, std::numeric_limits<int>::max(), 1, 0, YimMenu::Self::PlayerPed);
@@ -50,9 +49,11 @@ namespace YimMenu::Peds
 		if (followPlayer)
 		{
 			// Make the ped follow the player
-			TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0, 0, 0, 1.0f, -1, 1.0f, true, false, false, false, false, false);
+			TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0.0f, 0.0f, 0.0f, 1.0f, -1, 1.0f, true, false, false, true, false, true);
+			// Set the ped to guard the player
+			TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0);
+			TASK::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true);
 		}
-
 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
 		return ped;
