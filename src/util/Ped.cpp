@@ -40,18 +40,6 @@ namespace YimMenu::Peds
             TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0, 0, 0, 1.0f, -1, 1.0f, true, false, false, false, false, false);
         }
 
-        if (nonFleeing)
-        {
-            // Set the ped to not flee
-            PED::SET_PED_FLEE_ATTRIBUTES(ped, 0, false);  // Disable all fleeing
-        }
-
-        if (engageInCombat)
-        {
-            // Engage the ped in combat with surrounding enemies
-            TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0, 0);  // Range of 50 units, default flag
-        }
-
         STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
         return ped;
     }
