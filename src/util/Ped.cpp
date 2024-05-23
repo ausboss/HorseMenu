@@ -5,6 +5,39 @@
 
 namespace YimMenu::Peds
 {
+	// Helper function to detect if the player is under attack and return the attacker
+	Ped GetAttackerPed(Ped playerPed)
+	{
+		int nearbyPeds[10];
+		int numPeds = worldGetAllPeds(nearbyPeds, 10);
+
+		for (int i = 0; i < numPeds; i++)
+		{
+			Ped ped = nearbyPeds[i];
+			if (ENTITY::HAS_ENTITY_BEEN_DAMAGED_BY_ENTITY(playerPed, ped, true))
+			{
+				return ped;
+			}
+		}
+		return 0;
+	}
+
+	void EngagePedsInCombat(Ped playerPed, Ped attacker)
+	{
+		int groupID = PED::GET_PED_GROUP_INDEX(playerPed);
+		int nearbyPeds[10];
+		int numPeds = worldGetAllPeds(nearbyPeds, 10);
+
+		for (int i = 0; i < numPeds; i++)
+		{
+			Ped ped = nearbyPeds[i];
+			if (PED::IS_PED_IN_GROUP(ped) && PED::GET_PED_GROUP_INDEX(ped) == groupID)
+			{
+				TASK::TASK_COMBAT_PED(ped, attacker, 0, 16);
+			}
+		}
+	}
+
 	int SpawnPed(std::string model_name, Vector3 coords, float heading, bool blockNewPedMovement, bool spawnDead, bool invincible, bool invisible, int scale, bool followPlayer, bool noFleeing)
 	{
 		Hash model = Joaat(model_name.c_str());
@@ -49,7 +82,7 @@ namespace YimMenu::Peds
 		{
 			// Create a group and set the player as the leader
 			int groupID = PED::CREATE_GROUP(0);
-			PED::SET_PED_AS_GROUP_LEADER(YimMenu::Self::PlayerPed, groupID, 0);
+			PED::SET_PED_AS_GROUP_LEADER(YimMenu::Self::PlayerPed, groupID);
 			PED::SET_PED_AS_GROUP_MEMBER(ped, groupID);
 			PED::SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(ped, groupID, true);
 			PED::SET_GROUP_SEPARATION_RANGE(groupID, 999999.9f); // Very high range to prevent separation
@@ -60,10 +93,21 @@ namespace YimMenu::Peds
 
 			// Make the ped follow the player and engage in combat
 			TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0.0f, 0.0f, 0.0f, 1.0f, -1, 1.0f, true, false, false, true, false, true);
+			TASK::TASK_COMBAT_HATED_TARGETS_AROUND_PED(ped, 50.0f, 0);
 			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true);
 		}
 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
 		return ped;
+	}
+
+	void CheckPlayerUnderAttack()
+	{
+		Ped playerPed = PLAYER::PLAYER_PED_ID();
+		Ped attacker  = GetAttackerPed(playerPed);
+		if (attacker != 0)
+		{
+			EngagePedsInCombat(playerPed, attacker);
+		}
 	}
 }
