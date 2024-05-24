@@ -66,20 +66,57 @@ namespace YimMenu::Peds
 
 		if (followPlayer)
 		{
+			PED::SET_PED_ACCURACY(ped, 80);
+
 			// Create a group and set the player as the leader
-			int groupID = PED::CREATE_GROUP(0);
+			int groupID = PLAYER::GET_PLAYER_GROUP(YimMenu::Self::PlayerPed);
 			PED::SET_PED_AS_GROUP_LEADER(YimMenu::Self::PlayerPed, groupID, 0);
 			PED::SET_PED_AS_GROUP_MEMBER(ped, groupID);
+			PED::SET_PED_CONFIG_FLAG(ped, 152 /*PCF_0x79114A20*/, true);
 			PED::SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(ped, groupID, true);
 			PED::SET_GROUP_SEPARATION_RANGE(groupID, 999999.9f); // Very high range to prevent separation
+			PED::SET_PED_CONFIG_FLAG(ped, 156 /*PCF_EnableCompanionAISupport*/, true);
+			PED::SET_PED_CONFIG_FLAG(ped, 279 /*PCF_NeverLeavesGroup*/, true);
 
-			// Set group formation and spacing
-			PED::SET_GROUP_FORMATION(groupID, 0); // Default formation
-			PED::SET_GROUP_FORMATION_SPACING(groupID, 1.0f, 1.0f, 1.0f);
+
+			// Create a custom relationship group for the player and the companion
+			Hash companionGroup;
+			Hash playerGroup = 0x6F0783F5;
+			Hash hatesPlayer = 0x84DCFAAD;
+
+			PED::ADD_RELATIONSHIP_GROUP("COMPANION_GROUP", &companionGroup);
+
+			PED::SET_RELATIONSHIP_BETWEEN_GROUPS(1, companionGroup, playerGroup);
+			PED::SET_RELATIONSHIP_BETWEEN_GROUPS(1, playerGroup, companionGroup);
+			PED::SET_RELATIONSHIP_BETWEEN_GROUPS(5, companionGroup, hatesPlayer); // hates player group
+
+			PED::SET_PED_RELATIONSHIP_GROUP_HASH(YimMenu::Self::PlayerPed, playerGroup);
+			PED::SET_PED_RELATIONSHIP_GROUP_HASH(ped, companionGroup);
+
+			PED::SET_PED_AS_GROUP_MEMBER(ped, PLAYER::GET_PLAYER_GROUP(PLAYER::PLAYER_ID()));
+
+			// Set combat attributes
+			PED::SET_PED_COMBAT_ATTRIBUTES(ped, 5, true);  // BF_CanFightArmedPedsWhenNotArmed
+			PED::SET_PED_COMBAT_ATTRIBUTES(ped, 46, true); // BF_AlwaysFight
+			PED::SET_PED_COMBAT_RANGE(ped, 1);             // Medium combat range
+			PED::SET_PED_SEEING_RANGE(ped, 50.0f);         // Increase seeing range
+
+			// Allow talking
+			PED::SET_PED_CONFIG_FLAG(ped, 130, true);
 
 			// Make the ped follow the player and engage in combat
 			TASK::TASK_FOLLOW_TO_OFFSET_OF_ENTITY(ped, YimMenu::Self::PlayerPed, 0.0f, 0.0f, 0.0f, 1.0f, -1, 1.0f, true, false, false, true, false, true);
-			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true);
+			PED::SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, false);
+
+			// Add a blip to the ped
+			Blip blip = MAP::BLIP_ADD_FOR_ENTITY(Joaat("BLIP_STYLE_POSSE_MEMBER"), ped);
+			MAP::SET_BLIP_NAME_FROM_TEXT_FILE(blip, "Companion");
+
+			// Give the ped a weapon if they're a human
+			if (PED::IS_PED_HUMAN(ped))
+			{
+				WEAPON::GIVE_WEAPON_TO_PED(ped, Joaat("WEAPON_SHOTGUN_DOUBLEBARREL"), 999, true, true, 0, false, 0.5f, 1.0f, Joaat("ADD_REASON_DEFAULT"), false, 0.0f, false);
+			}
 		}
 
 		STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
