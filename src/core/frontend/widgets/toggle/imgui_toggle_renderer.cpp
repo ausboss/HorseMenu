@@ -1,3 +1,4 @@
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_toggle_renderer.hpp"
 #include "imgui_toggle_palette.hpp"
 #include "imgui_toggle_math.hpp"
